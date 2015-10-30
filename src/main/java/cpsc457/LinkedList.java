@@ -48,7 +48,12 @@ public class LinkedList<T> implements Iterable<T> {
     }
 
     public static <T extends Comparable<T>> void par_sort(LinkedList<T> list) {
-
+        list.par_sort(new Comparator<T>() {
+            @Override
+            public int compare(T o1, T o2) {
+                return o1.compareTo(o2);
+            }
+        });
     }
 
     public static <T extends Comparable<T>> void sort(LinkedList<T> list){
