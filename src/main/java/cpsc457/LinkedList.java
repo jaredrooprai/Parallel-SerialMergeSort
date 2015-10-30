@@ -96,6 +96,11 @@ public class LinkedList<T> implements Iterable<T> {
 	       return null;
     }
 
+
+
+
+
+
     static class MergeSort<T> { // object method pattern;
      final Comparator<T> comp;
 
@@ -105,6 +110,48 @@ public class LinkedList<T> implements Iterable<T> {
 
      public void sort(LinkedList<T> list) {
      }
+
+
+     public void msort(LinkedList<T> list){
+
+          Node<T> current = list.head;
+          Node<T> middle = current;
+
+          LinkedList<T> firstHalf = new LinkedList<T>();
+          LinkedList<T> secondHalf = new LinkedList<T>();
+
+          firstHalf.append(list.head.data);
+
+          while (current.next != null ){
+              current = current.next;
+              if (current.next != null) {
+                  middle = middle.next;
+                  firstHalf.append(middle.data);
+                  current = current.next;
+              }
+          }
+
+          while (middle.next != null){
+              middle = middle.next;
+              secondHalf.append(middle.data);
+          }
+
+          msort(firstHalf);
+          msort(secondHalf);
+     }
+
+
+
+      public void merge(LinkedList<T> firstHalf, LinkedList<T> secondHalf){
+
+          //Merging function
+          //1- Keep comparing the head of the two link lists
+          //2- Move the smallest node to the new merged link list
+          //3- Move the head on the list that lost this node
+
+          //4- Once one of the two lists is done, append the rest of the
+          //	 second list to the tail of the new merged link list
+      }
 
      public void parallel_sort(LinkedList<T> list) {
      }
