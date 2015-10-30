@@ -8,8 +8,16 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class LinkedList<T> implements Iterable<T> {
- 
+
+    private Node<T> head;
+    private Node<T> tail;
+
+    private int size;
+
     public LinkedList() {
+      head = null;
+      tail = null;
+      size = 0;
     }
 
     public LinkedList<T> append(T t) {
@@ -40,7 +48,7 @@ public class LinkedList<T> implements Iterable<T> {
     }
 
     public static <T extends Comparable<T>> void par_sort(LinkedList<T> list) {
-	
+
     }
 
     public static <T extends Comparable<T>> void sort(LinkedList<T> list){
@@ -71,5 +79,5 @@ public class LinkedList<T> implements Iterable<T> {
      }
  }
 
- 
+
 }
