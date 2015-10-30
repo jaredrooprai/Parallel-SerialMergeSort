@@ -21,30 +21,50 @@ public class LinkedList<T> implements Iterable<T> {
     }
 
     public LinkedList<T> append(T t) {
+        Node<T> node = new Node<>(t);
+        if (size == 0){
+          head = node;
+          tail = node;
+        }
+        else {
+          tail.next = node;
+          tail = node;
+        }
+        size++;
         return this;
     }
 
     public int size() {
-        return 0;
+        return size;
     }
 
     public boolean isEmpty() {
-        return true;
+        if (size == 0){
+          return true;
+        }
+        else {
+          return false;
+        }
     }
 
     public void clear() {
+        head = null;
+        tail = null;
     }
 
     public T get(int index) {
-	return null;
+	  return null;
+
+
     }
 
+
     public void sort(Comparator<T> comp) {
-	new MergeSort<T>(comp).sort(this);
+	     new MergeSort<T>(comp).sort(this);
     }
 
     public void par_sort(Comparator<T> comp) {
-	new MergeSort<T>(comp).parallel_sort(this);
+	      new MergeSort<T>(comp).parallel_sort(this);
     }
 
     public static <T extends Comparable<T>> void par_sort(LinkedList<T> list) {
@@ -67,7 +87,7 @@ public class LinkedList<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-	return null;
+	       return null;
     }
 
     static class MergeSort<T> { // object method pattern;
