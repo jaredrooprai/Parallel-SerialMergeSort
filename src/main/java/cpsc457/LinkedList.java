@@ -15,20 +15,20 @@ public class LinkedList<T> implements Iterable<T> {
     private int size;
 
     public LinkedList() {
-      head = null;
-      tail = null;
-      size = 0;
+        head = null;
+        tail = null;
+        size = 0;
     }
 
     public LinkedList<T> append(T t) {
         Node<T> node = new Node<>(t);
         if (size == 0){
-          head = node;
-          tail = node;
+            head = node;
+            tail = node;
         }
         else {
-          tail.next = node;
-          tail = node;
+            tail.next = node;
+            tail = node;
         }
         size++;
         return this;
@@ -40,10 +40,10 @@ public class LinkedList<T> implements Iterable<T> {
 
     public boolean isEmpty() {
         if (size == 0){
-          return true;
+            return true;
         }
         else {
-          return false;
+            return false;
         }
     }
 
@@ -53,14 +53,20 @@ public class LinkedList<T> implements Iterable<T> {
     }
 
     public T get(int index) {
-	  return null;
+        if (index < 0 || index >= size){
+            return null;
+        }
 
-
+        Node<T> current = head;
+        for (int i = 0; i < size-1; i++) {
+            current = current.next;
+        }
+        return current.data;
     }
 
 
     public void sort(Comparator<T> comp) {
-	     new MergeSort<T>(comp).sort(this);
+	       new MergeSort<T>(comp).sort(this);
     }
 
     public void par_sort(Comparator<T> comp) {
