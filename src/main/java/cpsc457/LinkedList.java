@@ -20,7 +20,7 @@ public class LinkedList<T> implements Iterable<T> {
         size = 0;
     }
 
-    public LinkedList<T> append(T t) {
+    public synchronized LinkedList<T> append(T t) {
         Node<T> node = new Node<>(t);
         if (size == 0){
             head = node;
@@ -34,11 +34,11 @@ public class LinkedList<T> implements Iterable<T> {
         return this;
     }
 
-    public int size() {
+    public synchronized int size() {
         return size;
     }
 
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         if (size == 0){
             return true;
         }
@@ -47,13 +47,13 @@ public class LinkedList<T> implements Iterable<T> {
         }
     }
 
-    public void clear() {
+    public synchronized void clear() {
         head = null;
         tail = null;
         size = 0;
     }
 
-    public T get(int index) {
+    public synchronized T get(int index) {
         if (index < 0 || index >= size){
             return null;
         }
@@ -131,88 +131,125 @@ public class LinkedList<T> implements Iterable<T> {
 
 
     static class MergeSort<T> { // object method pattern;
-     final Comparator<T> comp;
+    	
+	     final Comparator<T> comp;
+	     
+	     public int threadPool = 4;
+	     
+	
+	     public MergeSort(Comparator<T> comp) {
+	         this.comp = comp;
+	     }
+	
+	     public void sort(LinkedList<T> list) {
+	    	  if (list.head != null){
+	    		  list.head = msort(list).head;
+	    	  }
+	     }
+	
+	
+	     public LinkedList<T> msort(LinkedList<T> list){
+	          if (list.head.next == null){
+	            return list;
+	          }
+	                  
+	          Pair<LinkedList<T>, LinkedList<T>> splitted = split(list);	                    
+	          
+	          return merge( msort(splitted.fst()), msort(splitted.snd()) );
+	     }
+	     
+	     
+	     public Pair<LinkedList<T>,LinkedList<T>> split(LinkedList<T> list){
+	          Node<T> current = list.head;
+	          Node<T> middle = list.head;
+	
+	          LinkedList<T> firstHalf = new LinkedList<T>();
+	          LinkedList<T> secondHalf = new LinkedList<T>();
+	          
 
-     public MergeSort(Comparator<T> comp) {
-         this.comp = comp;
-     }
+	          firstHalf.append(list.head.data);
+	
+	          while (current.next != null ){
+	              current = current.next;
+	              if (current.next != null) {
+	                  middle = middle.next;
+	                  firstHalf.append(middle.data);
+	                  current = current.next;
+	              }
+	          }
+	
+	          while (middle.next != null){
+	              middle = middle.next;
+	              secondHalf.append(middle.data);
+	          }
+	    	 
+	          Pair<LinkedList<T>, LinkedList<T>> splitted = new Pair<>(firstHalf, secondHalf);
+	          return splitted;
+	     }
+ 	
+	    
 
-     public void sort(LinkedList<T> list) {
-    	  if (list.head != null){
-    		  list.head = msort(list).head;
-    	  }
-     }
+		public synchronized LinkedList<T> merge(LinkedList<T> firstHalf, LinkedList<T> secondHalf) {
+	
+	          LinkedList<T> merged = new LinkedList<T>();
+	
+	          while (firstHalf.head != null && secondHalf.head != null){
+	              if (comp.compare(firstHalf.head.data, secondHalf.head.data) < 0){
+	                  merged.append(firstHalf.head.data);
+	                  firstHalf.head = firstHalf.head.next;
+	              }
+	              else {
+	                merged.append(secondHalf.head.data);
+	                secondHalf.head = secondHalf.head.next;
+	              }
+	          }
+	
+	          if (firstHalf.head == null){
+	              while (secondHalf.head != null){
+	                  merged.append(secondHalf.head.data);
+	                  secondHalf.head = secondHalf.head.next;
+	              }
+	          }
+	          else if (secondHalf.head == null) {
+	            while (firstHalf.head != null){
+	                merged.append(firstHalf.head.data);
+	                firstHalf.head = firstHalf.head.next;
+	            }
+	          }
+	
+	          return merged;
+	      }
+	
+	
+	
+	     public void parallel_sort(LinkedList<T> list) {
+    	
+		   	 if (list.head != null){
+		   		 ExecutorService executor = Executors.newFixedThreadPool(threadPool);
 
+		   		 list.head = parallel_msort(list).head;
+		   		 
+		   		 executor.shutdown();
+		   		 
+		   		 while(!executor.isTerminated()){
+		   			 try{
+		   				 Thread.sleep(100);
+		   			 }
+		   			 catch(InterruptedException e){
+		   				 e.printStackTrace();		   				 
+		   			 }
+		   		 }
+			 }
+		   	 
+		   	 
+	     }
+	     
+	     
+	     public LinkedList<T> parallel_msort(LinkedList<T> list){
 
-     public LinkedList<T> msort(LinkedList<T> list){
-          if (list.head.next == null){
-            return list;
-          }
-
-          Node<T> current = list.head;
-          Node<T> middle = list.head;
-
-          LinkedList<T> firstHalf = new LinkedList<T>();
-          LinkedList<T> secondHalf = new LinkedList<T>();
-
-          firstHalf.append(list.head.data);
-
-          while (current.next != null ){
-              current = current.next;
-              if (current.next != null) {
-                  middle = middle.next;
-                  firstHalf.append(middle.data);
-                  current = current.next;
-              }
-          }
-
-          while (middle.next != null){
-              middle = middle.next;
-              secondHalf.append(middle.data);
-          }
-
-          return merge( msort(firstHalf), msort(secondHalf) );
-     }
-
-
-
-
-      public LinkedList<T> merge(LinkedList<T> firstHalf, LinkedList<T> secondHalf) {
-
-          LinkedList<T> merged = new LinkedList<T>();
-
-          while (firstHalf.head != null && secondHalf.head != null){
-              if (comp.compare(firstHalf.head.data, secondHalf.head.data) < 0){
-                  merged.append(firstHalf.head.data);
-                  firstHalf.head = firstHalf.head.next;
-              }
-              else {
-                merged.append(secondHalf.head.data);
-                secondHalf.head = secondHalf.head.next;
-              }
-          }
-
-          if (firstHalf.head == null){
-              while (secondHalf.head != null){
-                  merged.append(secondHalf.head.data);
-                  secondHalf.head = secondHalf.head.next;
-              }
-          }
-          else if (secondHalf.head == null) {
-            while (firstHalf.head != null){
-                merged.append(firstHalf.head.data);
-                firstHalf.head = firstHalf.head.next;
-            }
-          }
-
-          return merged;
-      }
-
-
-
-     public void parallel_sort(LinkedList<T> list) {
-     }
- }
+	    	 return null;
+	     }
+    }
 
 
 }
