@@ -138,7 +138,7 @@ public class LinkedList<T> implements Iterable<T> {
 
 	     final Comparator<T> comp;
 
-	     private static int poolSize = 1024;
+	     private int poolSize = 4;
    		 ExecutorService pool = Executors.newFixedThreadPool(poolSize);
 
 
