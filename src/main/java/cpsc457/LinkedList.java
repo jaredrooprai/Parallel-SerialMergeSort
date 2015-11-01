@@ -4,8 +4,7 @@ import cpsc457.doNOTmodify.Pair;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+
 
 public class LinkedList<T> implements Iterable<T> {
 
@@ -139,7 +138,7 @@ public class LinkedList<T> implements Iterable<T> {
 
 	     final Comparator<T> comp;
 
-	     private int poolSize = 4;
+	     private static int poolSize = 1024;
    		 ExecutorService pool = Executors.newFixedThreadPool(poolSize);
 
 
@@ -167,7 +166,7 @@ public class LinkedList<T> implements Iterable<T> {
 	     }
 
 
-	     public Pair<LinkedList<T>,LinkedList<T>> split(LinkedList<T> list){
+	     public synchronized Pair<LinkedList<T>,LinkedList<T>> split(LinkedList<T> list){
 	          Node<T> current = list.head;
 	          Node<T> middle = list.head;
 
@@ -254,8 +253,9 @@ public class LinkedList<T> implements Iterable<T> {
 	    	 if (list.head.next == null){
 	    		 return list;
 	    	 }
-
-	    	 if (poolSize <= 0){
+	    	 
+	    	
+	    	 if (((ThreadPoolExecutor)pool).getPoolSize() < 1){
 
 		          Pair<LinkedList<T>, LinkedList<T>> splitted = split(list);
 
@@ -263,8 +263,7 @@ public class LinkedList<T> implements Iterable<T> {
 
 	    	 }
 	    	 else{
-	    		 	 poolSize--;
-
+	    		 
 					 Future<LinkedList<T>> future = pool.submit(new Callable<LinkedList<T>>(){
 
 						  @Override
@@ -277,8 +276,7 @@ public class LinkedList<T> implements Iterable<T> {
 
 
 					   });
-					 poolSize++;
-
+					
 					 return future.get();
 	    	 }
 
