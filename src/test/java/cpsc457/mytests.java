@@ -126,4 +126,15 @@ public class mytests {
           assertTrue(list.get(2) == 15);
         }
 
+        @Test
+        public void testSort_one_item() {
+            LinkedList<Integer> list = new LinkedList<Integer>();
+
+            list.append(14);
+
+            LinkedList.sort(list);
+            assertTrue(list.get(0) == 14);
+
+          }
+
 }

@@ -94,7 +94,32 @@ public class LinkedList<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-	       return null;
+	       return new Iterator<T>(){
+            private Node<T> current = head;
+
+            @Override
+            public boolean hasNext(){
+                if (current.next == null){
+                  return false;
+                }
+                else {
+                  return true;
+                }
+            }
+
+            @Override
+            public T next(){
+              T data = current.data;
+              current = current.next;
+              return data;
+            }
+
+            @Override
+            public void remove(){
+              throw new UnsupportedOperationException();
+            }
+
+          };
     }
 
 
