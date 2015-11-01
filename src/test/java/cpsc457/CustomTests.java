@@ -129,5 +129,77 @@ public class CustomTests {
         assertTrue(list.get(2) == 15);
       }
 
+    
+    
+
+    @Test
+    public void test_par_sort_ordered_pair_int() {
+        LinkedList<Integer> list = new LinkedList<Integer>();
+        list.append(22);
+        list.append(14);
+
+        LinkedList.par_sort(list);
+        assertTrue(list.get(0) == 14);
+        assertTrue(list.get(1) == 22);
+    }
+
+
+    @Test
+    public void test_par_sort_reverse_pair_int() {
+        LinkedList<Integer> list = new LinkedList<Integer>();
+        list.append(14);
+        list.append(22);
+
+        LinkedList.par_sort(list);
+        assertTrue(list.get(0) == 14);
+        assertTrue(list.get(1) == 22);
+
+    }
+
+
+    @Test
+    public void test_par_sort_odd_ordered_int() {
+        LinkedList<Integer> list = new LinkedList<Integer>();
+
+        list.append(1);
+        list.append(14);
+        list.append(22);
+
+        LinkedList.par_sort(list);
+        assertTrue(list.get(0) == 1);
+        assertTrue(list.get(1) == 14);
+        assertTrue(list.get(2) == 22);
+    }
+
+
+    @Test
+    public void test_par_sort_odd_reversed_int() {
+        LinkedList<Integer> list = new LinkedList<Integer>();
+
+        list.append(14);
+        list.append(13);
+        list.append(12);
+
+        LinkedList.par_sort(list);
+        assertTrue(list.get(0) == 12);
+        assertTrue(list.get(1) == 13);
+        assertTrue(list.get(2) == 14);
+      }
+
+
+    @Test
+    public void test_par_sort_same_int() {
+        LinkedList<Integer> list = new LinkedList<Integer>();
+
+        list.append(14);
+        list.append(14);
+        list.append(15);
+        list.append(15);
+
+        LinkedList.par_sort(list);
+        assertTrue(list.get(0) == 14);
+        assertTrue(list.get(1) == 14);
+        assertTrue(list.get(2) == 15);
+      }
 
 }
