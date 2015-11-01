@@ -136,47 +136,47 @@ public class LinkedList<T> implements Iterable<T> {
 
 
     static class MergeSort <T> { // object method pattern;
-    	
+
 	     final Comparator<T> comp;
-	     
+
 	     private int poolSize = 4;
    		 ExecutorService pool = Executors.newFixedThreadPool(poolSize);
 
 
-	     
-	
+
+
 	     public MergeSort(Comparator<T> comp) {
 	         this.comp = comp;
 	     }
-	
+
 	     public void sort(LinkedList<T> list) {
 	    	  if (list.head != null){
 	    		  list.head = msort(list).head;
 	    	  }
 	     }
-	
-	
+
+
 	     public LinkedList<T> msort(LinkedList<T> list){
 	          if (list.head.next == null){
 	            return list;
 	          }
-	                  
-	          Pair<LinkedList<T>, LinkedList<T>> splitted = split(list);	                    
-	          
+
+	          Pair<LinkedList<T>, LinkedList<T>> splitted = split(list);
+
 	          return merge( msort(splitted.fst()), msort(splitted.snd()) );
 	     }
-	     
-	     
+
+
 	     public Pair<LinkedList<T>,LinkedList<T>> split(LinkedList<T> list){
 	          Node<T> current = list.head;
 	          Node<T> middle = list.head;
-	
+
 	          LinkedList<T> firstHalf = new LinkedList<T>();
 	          LinkedList<T> secondHalf = new LinkedList<T>();
-	          
+
 
 	          firstHalf.append(list.head.data);
-	
+
 	          while (current.next != null ){
 	              current = current.next;
 	              if (current.next != null) {
@@ -185,22 +185,22 @@ public class LinkedList<T> implements Iterable<T> {
 	                  current = current.next;
 	              }
 	          }
-	
+
 	          while (middle.next != null){
 	              middle = middle.next;
 	              secondHalf.append(middle.data);
 	          }
-	    	 
+
 	          Pair<LinkedList<T>, LinkedList<T>> splitted = new Pair<>(firstHalf, secondHalf);
 	          return splitted;
 	     }
- 	
-	    
+
+
 
 	     public synchronized LinkedList<T> merge(LinkedList<T> firstHalf, LinkedList<T> secondHalf) {
-	
+
 	          LinkedList<T> merged = new LinkedList<T>();
-	
+
 	          while (firstHalf.head != null && secondHalf.head != null){
 	              if (comp.compare(firstHalf.head.data, secondHalf.head.data) < 0){
 	                  merged.append(firstHalf.head.data);
@@ -211,7 +211,7 @@ public class LinkedList<T> implements Iterable<T> {
 	                secondHalf.head = secondHalf.head.next;
 	              }
 	          }
-	
+
 	          if (firstHalf.head == null){
 	              while (secondHalf.head != null){
 	                  merged.append(secondHalf.head.data);
@@ -224,64 +224,64 @@ public class LinkedList<T> implements Iterable<T> {
 	                firstHalf.head = firstHalf.head.next;
 	            }
 	          }
-	
+
 	          return merged;
 	      }
-	
-	
-	
+
+
+
 	     public void parallel_sort(LinkedList<T> list) throws InterruptedException, ExecutionException {
-    	
+
 		   	 if (list.head != null){
-		   		 
+
 		   		 list.head = parallel_msort(list).head;
-		   		 
+
 		   		 pool.shutdown();
 				 try {
 						pool.awaitTermination(20, TimeUnit.SECONDS);
 				 } catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-				 }		   		 
+				 }
 
 			 }
-		   	 
-		   	 
-	     } 
-	     
-	     
+
+
+	     }
+
+
 	     public LinkedList<T> parallel_msort (LinkedList<T> list) throws InterruptedException, ExecutionException{
 	    	 if (list.head.next == null){
 	    		 return list;
 	    	 }
-	    	 
+
 	    	 if (poolSize <= 0){
-	    		 
-		          Pair<LinkedList<T>, LinkedList<T>> splitted = split(list);	                    
-		          
-		          return merge( msort(splitted.fst()), msort(splitted.snd()) );
-	    		 
+
+		          Pair<LinkedList<T>, LinkedList<T>> splitted = split(list);
+
+		          return merge( parallel_msort(splitted.fst()), parallel_msort(splitted.snd()) );
+
 	    	 }
-	    	 else{	
+	    	 else{
 	    		 	 poolSize--;
-	    		 	 
+
 					 Future<LinkedList<T>> future = pool.submit(new Callable<LinkedList<T>>(){
-		
+
 						  @Override
 						  public LinkedList<T> call() throws Exception {
-							  
-					          Pair<LinkedList<T>, LinkedList<T>> splitted = split(list);	                    
-					          
-					          return merge( msort(splitted.fst()), msort(splitted.snd()) );
+
+					          Pair<LinkedList<T>, LinkedList<T>> splitted = split(list);
+
+					          return merge( parallel_msort(splitted.fst()), parallel_msort(splitted.snd()) );
 						  }
-			
-					    		 
+
+
 					   });
 					 poolSize++;
-					 
+
 					 return future.get();
 	    	 }
-	    		    	 
+
 	     }
     }
 
