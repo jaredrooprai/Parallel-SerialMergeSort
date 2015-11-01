@@ -3,9 +3,7 @@ package cpsc457;
           Custom Tests by jared
  *****************************************/
 import org.junit.Test;
-import java.util.Random;
 import static org.junit.Assert.*;
-import org.hamcrest.CoreMatchers.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
