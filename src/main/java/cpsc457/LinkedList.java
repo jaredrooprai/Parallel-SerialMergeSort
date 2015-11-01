@@ -50,6 +50,7 @@ public class LinkedList<T> implements Iterable<T> {
     public void clear() {
         head = null;
         tail = null;
+        size = 0;
     }
 
     public T get(int index) {
@@ -58,7 +59,7 @@ public class LinkedList<T> implements Iterable<T> {
         }
 
         Node<T> current = head;
-        for (int i = 0; i < size-1; i++) {
+        for (int i = 0; i < index; i++) {
             current = current.next;
         }
         return current.data;
@@ -109,13 +110,17 @@ public class LinkedList<T> implements Iterable<T> {
      }
 
      public void sort(LinkedList<T> list) {
+          list.head = msort(list).head;
      }
 
 
-     public void msort(LinkedList<T> list){
+     public LinkedList<T> msort(LinkedList<T> list){
+          if (list.head.next == null){
+            return list;
+          }
 
           Node<T> current = list.head;
-          Node<T> middle = current;
+          Node<T> middle = list.head;
 
           LinkedList<T> firstHalf = new LinkedList<T>();
           LinkedList<T> secondHalf = new LinkedList<T>();
@@ -136,22 +141,47 @@ public class LinkedList<T> implements Iterable<T> {
               secondHalf.append(middle.data);
           }
 
-          msort(firstHalf);
-          msort(secondHalf);
+          firstHalf = msort(firstHalf);
+          secondHalf = msort(secondHalf);
+
+          return merge(firstHalf, secondHalf);
      }
 
 
 
-      public void merge(LinkedList<T> firstHalf, LinkedList<T> secondHalf){
 
-          //Merging function
-          //1- Keep comparing the head of the two link lists
-          //2- Move the smallest node to the new merged link list
-          //3- Move the head on the list that lost this node
+      public LinkedList<T> merge(LinkedList<T> firstHalf, LinkedList<T> secondHalf) {
 
-          //4- Once one of the two lists is done, append the rest of the
-          //	 second list to the tail of the new merged link list
+          LinkedList<T> merged = new LinkedList<T>();
+
+          while (firstHalf.head != null && secondHalf.head != null){
+              if (comp.compare(firstHalf.head.data, secondHalf.head.data) < 0){
+                  merged.append(firstHalf.head.data);
+                  firstHalf.head = firstHalf.head.next;
+              }
+              else {
+                merged.append(secondHalf.head.data);
+                secondHalf.head = secondHalf.head.next;
+              }
+          }
+
+          if (firstHalf.head == null){
+              while (secondHalf.head != null){
+                  merged.append(secondHalf.head.data);
+                  secondHalf.head = secondHalf.head.next;
+              }
+          }
+          else if (secondHalf.head == null) {
+            while (firstHalf.head != null){
+                merged.append(firstHalf.head.data);
+                firstHalf.head = firstHalf.head.next;
+            }
+          }
+
+          return merged;
       }
+
+
 
      public void parallel_sort(LinkedList<T> list) {
      }
