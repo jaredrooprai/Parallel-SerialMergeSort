@@ -71,7 +71,12 @@ public class LinkedList<T> implements Iterable<T> {
     }
 
     public void par_sort(Comparator<T> comp) {
-	      new MergeSort<T>(comp).parallel_sort(this);
+	      try {
+			new MergeSort<T>(comp).parallel_sort(this);
+		} catch (InterruptedException | ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     public static <T extends Comparable<T>> void par_sort(LinkedList<T> list) {
@@ -130,11 +135,14 @@ public class LinkedList<T> implements Iterable<T> {
 
 
 
-    static class MergeSort<T> { // object method pattern;
+    static class MergeSort <T> { // object method pattern;
     	
 	     final Comparator<T> comp;
 	     
-	     public int threadPool = 4;
+	     private int poolSize = 4;
+   		 ExecutorService pool = Executors.newFixedThreadPool(poolSize);
+
+
 	     
 	
 	     public MergeSort(Comparator<T> comp) {
@@ -189,7 +197,7 @@ public class LinkedList<T> implements Iterable<T> {
  	
 	    
 
-		public synchronized LinkedList<T> merge(LinkedList<T> firstHalf, LinkedList<T> secondHalf) {
+	     public synchronized LinkedList<T> merge(LinkedList<T> firstHalf, LinkedList<T> secondHalf) {
 	
 	          LinkedList<T> merged = new LinkedList<T>();
 	
@@ -222,32 +230,58 @@ public class LinkedList<T> implements Iterable<T> {
 	
 	
 	
-	     public void parallel_sort(LinkedList<T> list) {
+	     public void parallel_sort(LinkedList<T> list) throws InterruptedException, ExecutionException {
     	
 		   	 if (list.head != null){
-		   		 ExecutorService executor = Executors.newFixedThreadPool(threadPool);
-
+		   		 
 		   		 list.head = parallel_msort(list).head;
 		   		 
-		   		 executor.shutdown();
-		   		 
-		   		 while(!executor.isTerminated()){
-		   			 try{
-		   				 Thread.sleep(100);
-		   			 }
-		   			 catch(InterruptedException e){
-		   				 e.printStackTrace();		   				 
-		   			 }
-		   		 }
+		   		 pool.shutdown();
+				 try {
+						pool.awaitTermination(20, TimeUnit.SECONDS);
+				 } catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+				 }		   		 
+
 			 }
 		   	 
 		   	 
-	     }
+	     } 
 	     
 	     
-	     public LinkedList<T> parallel_msort(LinkedList<T> list){
-
-	    	 return null;
+	     public LinkedList<T> parallel_msort (LinkedList<T> list) throws InterruptedException, ExecutionException{
+	    	 if (list.head.next == null){
+	    		 return list;
+	    	 }
+	    	 
+	    	 if (poolSize <= 0){
+	    		 
+		          Pair<LinkedList<T>, LinkedList<T>> splitted = split(list);	                    
+		          
+		          return merge( msort(splitted.fst()), msort(splitted.snd()) );
+	    		 
+	    	 }
+	    	 else{	
+	    		 	 poolSize--;
+	    		 	 
+					 Future<LinkedList<T>> future = pool.submit(new Callable<LinkedList<T>>(){
+		
+						  @Override
+						  public LinkedList<T> call() throws Exception {
+							  
+					          Pair<LinkedList<T>, LinkedList<T>> splitted = split(list);	                    
+					          
+					          return merge( msort(splitted.fst()), msort(splitted.snd()) );
+						  }
+			
+					    		 
+					   });
+					 poolSize++;
+					 
+					 return future.get();
+	    	 }
+	    		    	 
 	     }
     }
 
