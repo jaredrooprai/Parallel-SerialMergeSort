@@ -109,14 +109,14 @@ public class LinkedList<T> implements Iterable<T> {
 
             @Override
             public T next(){
-              T data = current.data;
-              current = current.next;
-              return data;
+                T data = current.data;
+                current = current.next;
+                return data;
             }
 
             @Override
             public void remove(){
-              throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException();
             }
 
           };
@@ -166,10 +166,7 @@ public class LinkedList<T> implements Iterable<T> {
               secondHalf.append(middle.data);
           }
 
-          firstHalf = msort(firstHalf);
-          secondHalf = msort(secondHalf);
-
-          return merge(firstHalf, secondHalf);
+          return merge( msort(firstHalf), msort(secondHalf) );
      }
 
 

@@ -1,5 +1,7 @@
 package cpsc457;
-
+/*****************************************
+          Custom Tests by jared
+ *****************************************/
 import org.junit.Test;
 import java.util.Random;
 import static org.junit.Assert.*;
@@ -8,12 +10,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class mytests {
+public class CustomTests {
 
 
-    /*****************************************
-     * Custom Tests by jared
-     *****************************************/
     @Test
     public void testGet() {
         LinkedList<Integer> list = new LinkedList<Integer>();
@@ -27,6 +26,7 @@ public class mytests {
         assertTrue(list.get(3) == null);
     }
 
+
     @Test
     public void testClear() {
         LinkedList<Integer> list = new LinkedList<Integer>();
@@ -35,6 +35,7 @@ public class mytests {
         assertTrue(list.isEmpty());
         assertTrue(list.get(0) == null);
     }
+
 
     @Test
     public void testSize() {
@@ -48,6 +49,7 @@ public class mytests {
         assertTrue(list.size() == 4);
     }
 
+
     @Test
     public void testIsEmpty() {
         LinkedList<Integer> list = new LinkedList<Integer>();
@@ -55,6 +57,7 @@ public class mytests {
         list.append(25);
         assertTrue(!list.isEmpty());
     }
+
 
     @Test
     public void testSort_ordered_pair_int() {
@@ -65,8 +68,8 @@ public class mytests {
         LinkedList.sort(list);
         assertTrue(list.get(0) == 14);
         assertTrue(list.get(1) == 22);
-
     }
+
 
     @Test
     public void testSort_reverse_pair_int() {
@@ -80,6 +83,7 @@ public class mytests {
 
     }
 
+
     @Test
     public void testSort_odd_ordered_int() {
         LinkedList<Integer> list = new LinkedList<Integer>();
@@ -88,13 +92,12 @@ public class mytests {
         list.append(14);
         list.append(22);
 
-
         LinkedList.sort(list);
         assertTrue(list.get(0) == 1);
         assertTrue(list.get(1) == 14);
         assertTrue(list.get(2) == 22);
-
     }
+
 
     @Test
     public void testSort_odd_reversed_int() {
@@ -110,31 +113,21 @@ public class mytests {
         assertTrue(list.get(2) == 14);
       }
 
-      @Test
-      public void testSort_same_int() {
-          LinkedList<Integer> list = new LinkedList<Integer>();
 
-          list.append(14);
-          list.append(14);
-          list.append(15);
-          list.append(15);
+    @Test
+    public void testSort_same_int() {
+        LinkedList<Integer> list = new LinkedList<Integer>();
 
+        list.append(14);
+        list.append(14);
+        list.append(15);
+        list.append(15);
 
-          LinkedList.sort(list);
-          assertTrue(list.get(0) == 14);
-          assertTrue(list.get(1) == 14);
-          assertTrue(list.get(2) == 15);
-        }
+        LinkedList.sort(list);
+        assertTrue(list.get(0) == 14);
+        assertTrue(list.get(1) == 14);
+        assertTrue(list.get(2) == 15);
+      }
 
-        @Test
-        public void testSort_one_item() {
-            LinkedList<Integer> list = new LinkedList<Integer>();
-
-            list.append(14);
-
-            LinkedList.sort(list);
-            assertTrue(list.get(0) == 14);
-
-          }
 
 }
