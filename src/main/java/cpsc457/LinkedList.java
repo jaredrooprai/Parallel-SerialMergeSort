@@ -99,6 +99,9 @@ public class LinkedList<T> implements Iterable<T> {
 
             @Override
             public boolean hasNext(){
+            	if (head == null){
+            		return false;
+            	}
                 if (current.next == null){
                   return false;
                 }
@@ -135,7 +138,9 @@ public class LinkedList<T> implements Iterable<T> {
      }
 
      public void sort(LinkedList<T> list) {
-          list.head = msort(list).head;
+    	  if (list.head != null){
+    		  list.head = msort(list).head;
+    	  }
      }
 
 
